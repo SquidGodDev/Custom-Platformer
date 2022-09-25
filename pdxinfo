@@ -1,0 +1,6 @@
+name=Custom Platformer
+author=SquidGodDev
+description=A platformer where you can create and share your own levels
+bundleID=com.squidgoddev.customplatformer
+version=0.1
+buildnumber=1
