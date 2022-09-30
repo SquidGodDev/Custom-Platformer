@@ -1,9 +1,16 @@
 import "scripts/level/blocks/wall"
 
+local pd <const> = playdate
+local gfx <const> = pd.graphics
+
 class('MediumBlock').extends(Wall)
 
 function MediumBlock:init(x)
-    self.width = 32
-    self.height = 16
-    MediumBlock.super.init(self, x, LEVEL_BASE_Y, self.width, self.height)
+    local blockImage = gfx.image.new("images/blocks/platformMedium")
+    self:setImage(blockImage)
+    self.width = self:getSize()
+
+    self:setCollideRect(0, 0, self:getSize())
+
+    MediumBlock.super.init(self, x, LEVEL_BASE_Y)
 end

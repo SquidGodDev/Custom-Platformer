@@ -22,8 +22,8 @@ LEVEL_BASE_Y = 200
 
 SCENE_MANAGER = SceneManager()
 
-LevelLoadScene()
--- LevelScene()
+-- LevelLoadScene()
+LevelScene()
 
 function pd.update()
     gfx.sprite.update()

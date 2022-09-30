@@ -1,5 +1,6 @@
 import "scripts/libraries/AnimatedSprite"
 import "scripts/level/blocks/hazard"
+import "scripts/level/blocks/movingPlatform"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -10,7 +11,7 @@ function Player:init(x, y)
     self.respawnX = x
     self.respawnY = y
 
-    local playerImageTable = gfx.imagetable.new("images/player/player-table-24-24")
+    local playerImageTable = gfx.imagetable.new("images/player/player-table-48-48")
     Player.super.init(self, playerImageTable)
 
     self:addState("idle", 1, 4, {tickStep = 4})
@@ -20,19 +21,23 @@ function Player:init(x, y)
     self:addState("jumpDescent", 9, 9)
 
     self.xVelocity = 0
+    self.adjustedXVelocity = 0
     self.yVelocity = 0
-    self.gravity = 9.8 / 30
+    self.gravity = 9.8 / 20
+    self.fastFalling = false
+    self.fastFallingGravity = self.gravity * 2
     self.maxSpeed = 3
     self.startVelocity = 2
-    self.jumpVelocity = -5
+    self.jumpVelocity = -6
 
+    self.frictionDisabled = false
     self.friction = 0.3
     self.drag = 0.1
     self.acceleration = 0.5
 
     self.doubleJumpAvailable = true
 
-    self:setCollideRect(6, 8, 12, 16)
+    self:setCollideRect(8, 14, 30, 34)
     self:setGroups(COLLISION_GROUPS.player)
     self:setCollidesWithGroups({COLLISION_GROUPS.wall, COLLISION_GROUPS.hazard})
 
@@ -46,7 +51,7 @@ function Player:update()
     self:updateAnimation()
 
     if self.currentState == "idle" then
-        if pd.buttonJustPressed(pd.kButtonA) then
+        if pd.buttonIsPressed(pd.kButtonA) then
             self.yVelocity = self.jumpVelocity
             self:changeState("jumpAscent")
         elseif pd.buttonIsPressed(pd.kButtonLeft) then
@@ -60,7 +65,7 @@ function Player:update()
         end
         self:applyFriction()
     elseif self.currentState == "run" then
-        if pd.buttonJustPressed(pd.kButtonA) then
+        if pd.buttonIsPressed(pd.kButtonA) then
             self.yVelocity = self.jumpVelocity
             self:changeState("jumpAscent")
         elseif pd.buttonIsPressed(pd.kButtonLeft) then
@@ -99,26 +104,33 @@ function Player:update()
 
     self:applyGravity()
 
-    local _, _, collisions, length = self:moveWithCollisions(self.x + self.xVelocity, self.y + self.yVelocity)
+    local _, _, collisions, length = self:moveWithCollisions(self.x + self.xVelocity + self.adjustedXVelocity, self.y + self.yVelocity)
     local touchedGround = false
     local touchedHazard = false
     for i=1,length do
         local collision = collisions[i]
         if collision.normal.y == -1 then
             touchedGround = true
+            self.fastFalling = false
+        elseif collision.normal.y == 1 then
+            self.yVelocity = 0
         end
         if collision.other:isa(Hazard) then
             touchedHazard = true
+        end
+        if collision.other:isa(MovingPlatform) and self.currentState == "idle" then
+            self.frictionDisabled = true
+            self.xVelocity = collision.other:getVelocity()
+        else
+            self.frictionDisabled = false
         end
     end
     if touchedGround then
         self.yVelocity = 0
         self.doubleJumpAvailable = true
     end
-    if touchedHazard then
-        self:moveTo(self.respawnX, self.respawnY)
-        self.xVelocity = 0
-        self.yVelocity = 0
+    if touchedHazard or self.y > 250 then
+        self:resetPlayer()
     end
 
     if self.xVelocity < 0 then
@@ -129,7 +141,20 @@ function Player:update()
     gfx.setDrawOffset(-self.x + 200, 0)
 end
 
+function Player:resetPlayer()
+    self:moveTo(self.respawnX, self.respawnY)
+    self.xVelocity = 0
+    self.yVelocity = 0
+end
+
 function Player:handleJumpPhysics()
+    self.fastFalling = pd.buttonIsPressed(pd.kButtonDown)
+
+    if pd.buttonJustPressed(pd.kButtonA) and self.doubleJumpAvailable then
+        self.doubleJumpAvailable = false
+        self.yVelocity = self.jumpVelocity
+        self:changeState("jumpAscent")
+    end
     if pd.buttonIsPressed(pd.kButtonLeft) then
         self:accelerateLeft()
     elseif pd.buttonIsPressed(pd.kButtonRight) then
@@ -160,7 +185,11 @@ function Player:accelerateRight()
 end
 
 function Player:applyGravity()
-    self.yVelocity += self.gravity
+    if self.fastFalling then
+        self.yVelocity += self.fastFallingGravity
+    else
+        self.yVelocity += self.gravity
+    end
 end
 
 function Player:applyDrag()
@@ -176,6 +205,10 @@ function Player:applyDrag()
 end
 
 function Player:applyFriction()
+    if self.frictionDisabled then
+        return
+    end
+
     if self.xVelocity > 0 then
         self.xVelocity -= self.friction
     elseif self.xVelocity < 0 then

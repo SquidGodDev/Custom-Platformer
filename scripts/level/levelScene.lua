@@ -5,6 +5,7 @@ import "scripts/level/blocks/longBlock"
 import "scripts/level/blocks/spike"
 import "scripts/level/blocks/movingSpike"
 import "scripts/level/blocks/shortSpace"
+import "scripts/level/blocks/movingPlatform"
 import "scripts/level/player/player"
 
 local pd <const> = playdate
@@ -22,6 +23,7 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
+    levelString = "gdddddddcc"
     self:processLevelString(levelString)
 
 
@@ -36,8 +38,8 @@ function LevelScene:update()
 end
 
 function LevelScene:processLevelString(levelString)
-    LongBlock(180)
-    local blockX = 180 + 64
+    local longBlock = LongBlock(180)
+    local blockX = 180 + longBlock.width
     for i=1,#levelString do
         local curBlock = self:getBlockType(levelString:sub(i, i), blockX)
         blockX += curBlock.width
@@ -57,6 +59,8 @@ function LevelScene:getBlockType(letter, blockX)
         return Spike(blockX)
     elseif letter == 'f' then
         return MovingSpike(blockX)
+    elseif letter == 'g' then
+        return MovingPlatform(blockX)
     else
         return ShortBlock(blockX)
     end

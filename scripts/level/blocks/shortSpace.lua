@@ -1,6 +1,7 @@
+import "scripts/level/blocks/wall"
 
 class('ShortSpace').extends()
 
 function ShortSpace:init()
-    self.width = 16
+    self.width = 32
 end
