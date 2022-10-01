@@ -124,6 +124,10 @@ function Player:update()
         else
             self.frictionDisabled = false
         end
+
+        if collision.other.collided then
+            collision.other:collided(self)
+        end
     end
     if touchedGround then
         self.yVelocity = 0
