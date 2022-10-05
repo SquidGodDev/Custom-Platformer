@@ -1,4 +1,4 @@
-import "scripts/level/blocks/wall"
+import "scripts/level/blocks/basic/wall"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics

@@ -11,14 +11,15 @@ function Player:init(x, y)
     self.respawnX = x
     self.respawnY = y
 
-    local playerImageTable = gfx.imagetable.new("images/player/player-table-48-48")
+    local playerImageTable = gfx.imagetable.new("images/player/player-table-32-32")
     Player.super.init(self, playerImageTable)
 
-    self:addState("idle", 1, 4, {tickStep = 4})
-    self:addState("run", 5, 10, {tickStep = 4})
-    self:addState("jumpAscent", 7, 7)
+    self:addState("idle", 1, 1)
+    self:addState("run", 2, 5, {tickStep = 4})
+    self:addState("climb", 6, 7, {tickStep = 4})
+    self:addState("jumpAscent", 8, 8)
     self:addState("jumpPeak", 8, 8)
-    self:addState("jumpDescent", 9, 9)
+    self:addState("jumpDescent", 8, 8)
 
     self.xVelocity = 0
     self.adjustedXVelocity = 0
@@ -31,13 +32,11 @@ function Player:init(x, y)
     self.jumpVelocity = -6
 
     self.frictionDisabled = false
-    self.friction = 0.3
+    self.friction = 0.5
     self.drag = 0.1
     self.acceleration = 0.5
 
-    self.doubleJumpAvailable = true
-
-    self:setCollideRect(8, 14, 30, 34)
+    self:setCollideRect(2, 2, 28, 30)
     self:setGroups(COLLISION_GROUPS.player)
     self:setCollidesWithGroups({COLLISION_GROUPS.wall, COLLISION_GROUPS.hazard})
 
@@ -131,7 +130,6 @@ function Player:update()
     end
     if touchedGround then
         self.yVelocity = 0
-        self.doubleJumpAvailable = true
     end
     if touchedHazard or self.y > 250 then
         self:resetPlayer()
@@ -154,11 +152,6 @@ end
 function Player:handleJumpPhysics()
     self.fastFalling = pd.buttonIsPressed(pd.kButtonDown)
 
-    if pd.buttonJustPressed(pd.kButtonA) and self.doubleJumpAvailable then
-        self.doubleJumpAvailable = false
-        self.yVelocity = self.jumpVelocity
-        self:changeState("jumpAscent")
-    end
     if pd.buttonIsPressed(pd.kButtonLeft) then
         self:accelerateLeft()
     elseif pd.buttonIsPressed(pd.kButtonRight) then

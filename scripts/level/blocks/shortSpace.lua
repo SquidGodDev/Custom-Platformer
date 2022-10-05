@@ -1,4 +1,3 @@
-import "scripts/level/blocks/wall"
 
 class('ShortSpace').extends()
 

@@ -1,4 +1,4 @@
-import "scripts/level/blocks/wall"
+import "scripts/level/blocks/basic/wall"
 import "scripts/level/blocks/hazard"
 
 local pd <const> = playdate
