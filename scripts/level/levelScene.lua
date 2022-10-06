@@ -15,6 +15,7 @@ local gfx <const> = playdate.graphics
 class('LevelScene').extends(gfx.sprite)
 
 function LevelScene:init(levelString)
+    TEMP_HAZARDS = {}
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
         function()
@@ -30,8 +31,8 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
-    levelString = "abcdefgnopqdrarard"
-    -- levelString = "abcabc"
+    -- levelString = "abcdefgnopqdrarard"
+    levelString = "ddhjldd"
     self:processLevelString(levelString)
 
 

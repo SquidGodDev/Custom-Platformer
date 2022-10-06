@@ -147,6 +147,15 @@ function Player:resetPlayer()
     self:moveTo(self.respawnX, self.respawnY)
     self.xVelocity = 0
     self.yVelocity = 0
+
+    local tempHazardList = TEMP_HAZARDS
+    for i=1, #tempHazardList do
+        local curProjectile = tempHazardList[i]
+        if curProjectile then
+            curProjectile:remove()
+        end
+    end
+    TEMP_HAZARDS = {}
 end
 
 function Player:handleJumpPhysics()

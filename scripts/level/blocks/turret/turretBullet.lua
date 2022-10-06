@@ -8,7 +8,7 @@ local gfx <const> = pd.graphics
 class('TurretBullet').extends(Hazard)
 
 function TurretBullet:init(x, y, flipped)
-    TurretBullet.super.init(self)
+    TurretBullet.super.init(self, true)
     self:setCollidesWithGroups({COLLISION_GROUPS.player, COLLISION_GROUPS.wall})
     local turretBulletImage = gfx.image.new("images/blocks/turretBullet")
     self:setImage(turretBulletImage)
