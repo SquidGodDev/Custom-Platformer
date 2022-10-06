@@ -5,14 +5,14 @@ local gfx <const> = pd.graphics
 
 class('CrumblingPlatform').extends(Wall)
 
-function CrumblingPlatform:init(x)
+function CrumblingPlatform:init(x, y)
     local blockImage = gfx.image.new("images/blocks/crumblingPlatform")
     self:setImage(blockImage)
     self.width = self:getSize()
 
     self:setCollideRect(0, 0, self:getSize())
 
-    CrumblingPlatform.super.init(self, x, LEVEL_BASE_Y)
+    CrumblingPlatform.super.init(self, x, y)
 
     self.crumbling = false
 

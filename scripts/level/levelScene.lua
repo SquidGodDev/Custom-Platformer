@@ -2,7 +2,7 @@ import "scripts/level/blocks/basic/platform1"
 import "scripts/level/blocks/basic/platform2"
 import "scripts/level/blocks/basic/platform3"
 import "scripts/level/blocks/spike"
-import "scripts/level/blocks/movingSpike"
+import "scripts/level/blocks/verticalMovingSpike"
 import "scripts/level/blocks/shortSpace"
 import "scripts/level/blocks/movingPlatform"
 import "scripts/level/blocks/turret/turret"
@@ -30,8 +30,8 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
-    -- levelString = "cjchc"
-    levelString = "abcabc"
+    levelString = "abcdefgnopqdrarard"
+    -- levelString = "abcabc"
     self:processLevelString(levelString)
 
 
@@ -46,7 +46,7 @@ function LevelScene:update()
 end
 
 function LevelScene:processLevelString(levelString)
-    local longBlock = Platform3(180)
+    local longBlock = Platform3(180, LEVEL_BASE_Y)
     local blockX = 180 + longBlock.width
     for i=1,#levelString do
         local curBlock = self:getBlockType(levelString:sub(i, i), blockX)
@@ -55,16 +55,34 @@ function LevelScene:processLevelString(levelString)
 end
 
 function LevelScene:getBlockType(letter, blockX)
-    if letter == 'a' then return Platform1(blockX)
-    elseif letter == 'b' then return Platform2(blockX)
-    elseif letter == 'c' then return Platform3(blockX)
-    elseif letter == 'd' then return ShortSpace(blockX)
-    elseif letter == 'e' then return Spike(blockX)
-    elseif letter == 'f' then return MovingSpike(blockX)
-    elseif letter == 'g' then return MovingPlatform(blockX)
-    elseif letter == 'h' then return Turret(blockX, false)
-    elseif letter == 'i' then return Turret(blockX, true)
-    elseif letter == 'j' then return CrumblingPlatform(blockX)
-    else return ShortBlock(blockX)
+    local height1 = LEVEL_BASE_Y
+    local height2 = height1 - 32
+    local height3 = height2 - 32
+    if     letter == 'a' then return Platform1(blockX, height1)
+    elseif letter == 'b' then return Platform1(blockX, height2)
+    elseif letter == 'c' then return Platform1(blockX, height3)
+    elseif letter == 'd' then return Platform3(blockX, height1)
+    elseif letter == 'e' then return Platform3(blockX, height2)
+    elseif letter == 'f' then return Platform3(blockX, height3)
+    elseif letter == 'g' then return ShortSpace(blockX)
+    elseif letter == 'h' then return Turret(blockX, height1, false)
+    elseif letter == 'i' then return Turret(blockX, height1, true)
+    elseif letter == 'j' then return Turret(blockX, height2, false)
+    elseif letter == 'k' then return Turret(blockX, height2, true)
+    elseif letter == 'l' then return Turret(blockX, height3, false)
+    elseif letter == 'm' then return Turret(blockX, height3, true)
+    elseif letter == 'n' then return VerticalMovingSpike(blockX)
+    elseif letter == 'o' then return CrumblingPlatform(blockX, height1)
+    elseif letter == 'p' then return CrumblingPlatform(blockX, height1)
+    elseif letter == 'q' then return CrumblingPlatform(blockX, height1)
+    elseif letter == 'r' then return Spike(blockX, height1)
+    elseif letter == 's' then return Spike(blockX, height2)
+    elseif letter == 't' then return Spike(blockX, height3)
+    elseif letter == 'u' then return Platform1(blockX, height1)
+    elseif letter == 'v' then return Platform1(blockX, height1)
+    elseif letter == 'w' then return Platform1(blockX, height1)
+    elseif letter == 'x' then return Platform1(blockX, height1)
+    elseif letter == 'y' then return Platform1(blockX, height1)
+    elseif letter == 'z' then return Platform1(blockX, height1)
     end
 end

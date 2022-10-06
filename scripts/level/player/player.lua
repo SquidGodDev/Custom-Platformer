@@ -29,14 +29,14 @@ function Player:init(x, y)
     self.fastFallingGravity = self.gravity * 2
     self.maxSpeed = 3
     self.startVelocity = 2
-    self.jumpVelocity = -6
+    self.jumpVelocity = -7
 
     self.frictionDisabled = false
     self.friction = 0.5
     self.drag = 0.1
     self.acceleration = 0.5
 
-    self:setCollideRect(2, 2, 28, 30)
+    self:setCollideRect(8, 4, 18, 28)
     self:setGroups(COLLISION_GROUPS.player)
     self:setCollidesWithGroups({COLLISION_GROUPS.wall, COLLISION_GROUPS.hazard})
 

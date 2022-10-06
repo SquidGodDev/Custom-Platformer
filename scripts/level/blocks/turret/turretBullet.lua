@@ -10,12 +10,8 @@ class('TurretBullet').extends(Hazard)
 function TurretBullet:init(x, y, flipped)
     TurretBullet.super.init(self)
     self:setCollidesWithGroups({COLLISION_GROUPS.player, COLLISION_GROUPS.wall})
-    local bulletSize = 16
-    local blockImage = gfx.image.new(bulletSize, bulletSize)
-    gfx.pushContext(blockImage)
-        gfx.fillCircleInRect(0, 0, bulletSize, bulletSize)
-    gfx.popContext()
-    self:setImage(blockImage)
+    local turretBulletImage = gfx.image.new("images/blocks/turretBullet")
+    self:setImage(turretBulletImage)
 
     self:setCollideRect(0, 0, self:getSize())
 
