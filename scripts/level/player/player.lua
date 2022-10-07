@@ -76,17 +76,13 @@ function Player:update()
         end
     elseif self.currentState == "jumpAscent" then
         self:handleJumpPhysics()
-        if math.abs(self.yVelocity) < 0.5 then
-            self:changeState("jumpPeak")
-        end
-    elseif self.currentState == "jumpPeak" then
-        self:handleJumpPhysics()
-        if self.yVelocity > 0.5 then
+        if self.yVelocity >= 0 then
             self:changeState("jumpDescent")
         end
     elseif self.currentState == "jumpDescent" then
         self:handleJumpPhysics()
-        if self.yVelocity == 0 then
+        print("Here")
+        if math.abs(self.yVelocity) < 0.5 then
             if pd.buttonIsPressed(pd.kButtonLeft) then
                 self.xVelocity = -self.startVelocity
                 self.globalFlip = 1
@@ -129,6 +125,7 @@ function Player:update()
         end
     end
     if touchedGround then
+        self.fastFalling = false
         self.yVelocity = 0
     end
     if touchedHazard or self.y > 250 then
