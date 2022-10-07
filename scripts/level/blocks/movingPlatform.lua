@@ -5,8 +5,8 @@ local gfx <const> = pd.graphics
 
 class('MovingPlatform').extends(Wall)
 
-function MovingPlatform:init(x)
-    local blockImage = gfx.image.new("images/blocks/platformShort")
+function MovingPlatform:init(x, y)
+    local blockImage = gfx.image.new("images/blocks/movingPlatform")
     self:setImage(blockImage)
     self.width = self:getSize()
 
@@ -16,7 +16,7 @@ function MovingPlatform:init(x)
     self.moveSpeed = 2
     self.direction = 1
 
-    MovingPlatform.super.init(self, x, LEVEL_BASE_Y)
+    MovingPlatform.super.init(self, x, y)
 end
 
 function MovingPlatform:update()

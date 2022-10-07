@@ -13,7 +13,7 @@ function TurretBullet:init(x, y, flipped)
     local turretBulletImage = gfx.image.new("images/blocks/turretBullet")
     self:setImage(turretBulletImage)
 
-    self:setCollideRect(0, 0, self:getSize())
+    self:setCollideRect(1, 1, 6, 6)
 
     self:moveTo(x, y)
     self:add()

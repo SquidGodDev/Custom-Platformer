@@ -1,8 +1,9 @@
 import "scripts/level/blocks/basic/platform1"
 import "scripts/level/blocks/basic/platform2"
 import "scripts/level/blocks/basic/platform3"
-import "scripts/level/blocks/spike"
-import "scripts/level/blocks/verticalMovingSpike"
+import "scripts/level/blocks/spikes/spike"
+import "scripts/level/blocks/spikes/verticalMovingSpike"
+import "scripts/level/blocks/spikes/horizontalMovingSpike"
 import "scripts/level/blocks/shortSpace"
 import "scripts/level/blocks/movingPlatform"
 import "scripts/level/blocks/turret/turret"
@@ -32,7 +33,9 @@ function LevelScene:init(levelString)
     -- LongBlock(180+64+32+32+64+16)
 
     -- levelString = "abcdefgnopqdrarard"
-    levelString = "ddhjldd"
+    -- levelString = "abcndhd"
+    -- levelString = "dguuggdbvggbcwggf"
+    levelString = "dbgagagagagaybd"
     self:processLevelString(levelString)
 
 
@@ -79,11 +82,11 @@ function LevelScene:getBlockType(letter, blockX)
     elseif letter == 'r' then return Spike(blockX, height1)
     elseif letter == 's' then return Spike(blockX, height2)
     elseif letter == 't' then return Spike(blockX, height3)
-    elseif letter == 'u' then return Platform1(blockX, height1)
-    elseif letter == 'v' then return Platform1(blockX, height1)
-    elseif letter == 'w' then return Platform1(blockX, height1)
-    elseif letter == 'x' then return Platform1(blockX, height1)
-    elseif letter == 'y' then return Platform1(blockX, height1)
-    elseif letter == 'z' then return Platform1(blockX, height1)
+    elseif letter == 'u' then return MovingPlatform(blockX, height1)
+    elseif letter == 'v' then return MovingPlatform(blockX, height2)
+    elseif letter == 'w' then return MovingPlatform(blockX, height3)
+    elseif letter == 'x' then return HorizontalMovingSpike(blockX, height1)
+    elseif letter == 'y' then return HorizontalMovingSpike(blockX, height2)
+    elseif letter == 'z' then return HorizontalMovingSpike(blockX, height3)
     end
 end

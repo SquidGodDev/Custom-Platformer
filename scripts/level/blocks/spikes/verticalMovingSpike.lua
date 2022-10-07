@@ -12,15 +12,15 @@ function VerticalMovingSpike:init(x)
     local spikeBallImage = gfx.image.new("images/blocks/spikeBall")
     self:setImage(spikeBallImage)
     self:setCenter(0, 0)
-    self.minY = LEVEL_BASE_Y - 16
-    self.maxY = self.minY - 96
+    self.minY = LEVEL_BASE_Y
+    self.maxY = self.minY - 32 * 3
     self.movingUp = true
     self:moveTo(x, self.minY)
     self:add()
 
     self.moveSpeed = 2
 
-    self:setCollideRect(2, 2, 28, 28)
+    self:setCollideRect(4, 4, 24, 24)
 
     Wall(x, LEVEL_BASE_Y, self.width, 16)
 end

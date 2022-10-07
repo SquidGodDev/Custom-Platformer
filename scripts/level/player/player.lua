@@ -24,7 +24,7 @@ function Player:init(x, y)
     self.xVelocity = 0
     self.adjustedXVelocity = 0
     self.yVelocity = 0
-    self.gravity = 9.8 / 20
+    self.gravity = 0.5
     self.fastFalling = false
     self.fastFallingGravity = self.gravity * 2
     self.maxSpeed = 3
