@@ -50,7 +50,7 @@ function Player:update()
     self:updateAnimation()
 
     if self.currentState == "idle" then
-        if pd.buttonIsPressed(pd.kButtonA) then
+        if pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonUp) then
             self.yVelocity = self.jumpVelocity
             self:changeState("jumpAscent")
         elseif pd.buttonIsPressed(pd.kButtonLeft) then
@@ -64,7 +64,7 @@ function Player:update()
         end
         self:applyFriction()
     elseif self.currentState == "run" then
-        if pd.buttonIsPressed(pd.kButtonA) then
+        if pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonUp) then
             self.yVelocity = self.jumpVelocity
             self:changeState("jumpAscent")
         elseif pd.buttonIsPressed(pd.kButtonLeft) then
@@ -81,7 +81,6 @@ function Player:update()
         end
     elseif self.currentState == "jumpDescent" then
         self:handleJumpPhysics()
-        print("Here")
         if math.abs(self.yVelocity) < 0.5 then
             if pd.buttonIsPressed(pd.kButtonLeft) then
                 self.xVelocity = -self.startVelocity
@@ -110,6 +109,10 @@ function Player:update()
         elseif collision.normal.y == 1 then
             self.yVelocity = 0
         end
+        if collision.normal.x == -1 or collision.normal.x == 1 then
+            self.xVelocity = 0
+        end
+
         if collision.other:isa(Hazard) then
             touchedHazard = true
         end

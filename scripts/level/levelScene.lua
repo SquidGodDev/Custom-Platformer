@@ -33,7 +33,7 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
-    levelString = "arrdddaammpaafaaoaaoaaobabsdzddzddzddbbb"
+    levelString = "abrdddaammpaafaaoaaoaaobabsdzddzddzddbbb"
     self:processLevelString(levelString)
 
 
