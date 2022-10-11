@@ -33,7 +33,7 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
-    levelString = "abrdddaammpaafaaoaaoaaobabsdzddzddzddbbb"
+    levelString = "abrdddaammpaafaaoaaoaaobabsdzddyddzddbbb"
     self:processLevelString(levelString)
 
 
@@ -72,8 +72,8 @@ function LevelScene:getBlockType(letter, blockX)
     elseif letter == 'j' then return Turret(blockX, height3, true)
     elseif letter == 'k' then return VerticalMovingSpike(blockX)
     elseif letter == 'l' then return CrumblingPlatform(blockX, height1)
-    elseif letter == 'm' then return CrumblingPlatform(blockX, height1)
-    elseif letter == 'n' then return CrumblingPlatform(blockX, height1)
+    elseif letter == 'm' then return CrumblingPlatform(blockX, height2)
+    elseif letter == 'n' then return CrumblingPlatform(blockX, height3)
     elseif letter == 'o' then return Spike(blockX, height1)
     elseif letter == 'p' then return Spike(blockX, height2)
     elseif letter == 'q' then return Spike(blockX, height3)
