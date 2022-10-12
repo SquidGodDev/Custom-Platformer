@@ -10,98 +10,77 @@ local function getDitheredImage(image)
 end
 
 local height1 = LEVEL_BASE_Y
-local height2 = height1 - 32
-local height3 = height2 - 32
 
-local function blockData(blockImage, letter, height)
+local function blockData(blockImage, letter, baseHeight, iconImage)
     local ditheredBlock = getDitheredImage(blockImage)
-    local iconImage = blockImage:scaledImage(0.5)
+    if not iconImage then
+        iconImage = blockImage:scaledImage(0.5)
+    end
     return {
         icon = iconImage,
         blockImage = blockImage,
         ditheredBlock = ditheredBlock,
-        height = height,
+        baseHeight = baseHeight,
         letter = letter
     }
 end
 
-local function platform1Data(letter, height)
-    local blockImage = gfx.image.new("images/block/platform1")
-    return blockData(blockImage, letter, height)
-end
-
-local function spikeData(letter, height)
-    local blockImage = gfx.image.new("images/levelEditor/blocks/spike")
-    return blockData(blockImage, letter, height - 16)
-end
-
-local function horizontalMovingSpikeData(letter, height)
-    local blockImage = gfx.image.new("images/block/horizontalMovingSpike")
-    return blockData(blockImage, letter, height)
-end
-
-local function verticalMovingSpikeData(letter)
-    local blockImage = gfx.image.new("images/block/verticalMovingSpike")
+local function platform1Data(letter)
+    local blockImage = gfx.image.new("images/blocks/platform1")
     return blockData(blockImage, letter, height1)
 end
 
-local function spurData(letter, height)
-    local blockImage = gfx.image.new("images/block/spur")
-    return blockData(blockImage, letter, height)
+local function spikeData(letter)
+    local blockImage = gfx.image.new("images/levelEditor/blocks/spike")
+    local iconImage = gfx.image.new("images/levelEditor/blocks/spikeIcon")
+    return blockData(blockImage, letter, height1 - 16, iconImage)
 end
 
-local function turretData(letter, height, flipped)
+local function horizontalMovingSpikeData(letter)
+    local blockImage = gfx.image.new("images/blocks/spikeBall")
+    return blockData(blockImage, letter, height1)
+end
+
+local function verticalMovingSpikeData(letter)
+    local blockImage = gfx.image.new("images/blocks/spikeBall")
+    return blockData(blockImage, letter, nil)
+end
+
+local function spurData(letter)
+    local blockImage = gfx.image.new("images/blocks/spur")
+    return blockData(blockImage, letter, height1)
+end
+
+local function turretData(letter, flipped)
     local blockImage = gfx.image.new("images/levelEditor/blocks/turret")
+    local iconImage = gfx.image.new("images/levelEditor/blocks/turretIcon")
     if flipped then
         blockImage = gfx.image.new("images/levelEditor/blocks/turretFlipped")
+        iconImage = gfx.image.new("images/levelEditor/blocks/turretIconFlipped")
     end
-    return blockData(blockImage, letter, height - 48)
+    return blockData(blockImage, letter, height1 - 48, iconImage)
 end
 
-local function crumblingPlatformData(letter, height)
-    local blockImage = gfx.image.new("images/block/crumblingPlatform")
-    return blockData(blockImage, letter, height)
+local function crumblingPlatformData(letter)
+    local blockImage = gfx.image.new("images/blocks/crumblingPlatform")
+    return blockData(blockImage, letter, height1)
 end
 
-local function movingPlatformData(letter, height)
-    local blockImage = gfx.image.new("images/block/movingPlatform")
-    return blockData(blockImage, letter, height)
+local function movingPlatformData(letter)
+    local blockImage = gfx.image.new("images/blocks/movingPlatform")
+    return blockData(blockImage, letter, height1)
 end
 
 local blockTable = {
-    blocks = {
-        platform1Data('a', height1),
-        platform1Data('b', height2),
-        platform1Data('c', height3)
-    },
-    spikes = {
-        verticalMovingSpikeData('k'),
-        spikeData('o', height1),
-        spikeData('p', height2),
-        spikeData('q', height3),
-        horizontalMovingSpikeData('u', height1),
-        horizontalMovingSpikeData('v', height2),
-        horizontalMovingSpikeData('w', height3),
-        spurData('x', height1),
-        spurData('y', height2),
-        spurData('z', height3)
-    },
-    platforms = {
-        crumblingPlatformData('l', height1),
-        crumblingPlatformData('m', height2),
-        crumblingPlatformData('n', height3),
-        movingPlatformData('r', height1),
-        movingPlatformData('s', height2),
-        movingPlatformData('t', height3)
-    },
-    turrets = {
-        turretData('e', height1, false),
-        turretData('f', height1, true),
-        turretData('g', height2, false),
-        turretData('h', height2, true),
-        turretData('i', height3, false),
-        turretData('j', height3, true)
-    }
+    platform1Data('a'),
+    verticalMovingSpikeData('k'),
+    spikeData('o'),
+    horizontalMovingSpikeData('u'),
+    spurData('x'),
+    crumblingPlatformData('l'),
+    movingPlatformData('r'),
+    turretData('e', false),
+    turretData('h', true)
 }
 
 function getBlockData()

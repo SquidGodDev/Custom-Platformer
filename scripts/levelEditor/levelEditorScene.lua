@@ -1,18 +1,18 @@
-import "scripts/levelEditor/blockData"
+import "scripts/levelEditor/blockList"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-local blockData <const> = getBlockData()
 
 class('LevelEditorScene').extends(gfx.sprite)
 
 function LevelEditorScene:init()
-    -- category
-    -- icon
-    -- block
-    -- height
-    -- dithered block
-    -- letter
+    local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
+    gfx.sprite.setBackgroundDrawingCallback(
+        function()
+            backgroundImage:draw(0, 0)
+        end
+    )
+    BlockList()
 end
 
 function LevelEditorScene:update()
