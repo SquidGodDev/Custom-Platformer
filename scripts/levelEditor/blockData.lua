@@ -4,7 +4,7 @@ local gfx <const> = playdate.graphics
 local function getDitheredImage(image)
     local ditheredImage = gfx.image.new(image:getSize())
     gfx.pushContext(ditheredImage)
-        image:drawFaded(0, 0, 0.5, gfx.image.kDitherTypeBayer8x8)
+        image:drawFaded(0, 0, 0.3, gfx.image.kDitherTypeBayer8x8)
     gfx.popContext()
     return ditheredImage
 end

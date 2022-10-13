@@ -6,7 +6,9 @@ local blockData <const> = getBlockData()
 
 class('BlockList').extends(gfx.sprite)
 
-function BlockList:init()
+function BlockList:init(levelEditor)
+    self.levelEditor = levelEditor
+
     self.blockList = pd.ui.gridview.new(16, 16)
     self.blockList:setNumberOfRows(#blockData)
     self.blockList:setCellPadding(0, 0, 4, 4)
@@ -43,17 +45,13 @@ function BlockList:init()
 end
 
 function BlockList:update()
-    if pd.buttonJustPressed(pd.kButtonUp) then
-        self.blockList:selectPreviousRow(true)
-    elseif pd.buttonJustPressed(pd.kButtonDown) then
-        self.blockList:selectNextRow(true)
-    end
-
-    local crankTicks = pd.getCrankTicks(2)
+    local crankTicks = pd.getCrankTicks(3)
     if crankTicks == 1 then
         self.blockList:selectNextRow(true)
+        self.levelEditor:updateSelectedBlock()
     elseif crankTicks == -1 then
         self.blockList:selectPreviousRow(true)
+        self.levelEditor:updateSelectedBlock()
     end
 
     if self.blockList.needsDisplay then
@@ -63,4 +61,9 @@ function BlockList:update()
         gfx.popContext()
         self:setImage(gridviewImage)
     end
+end
+
+function BlockList:getSelectedBlockData()
+    local selectedRow = self.blockList:getSelectedRow()
+    return blockData[selectedRow]
 end
