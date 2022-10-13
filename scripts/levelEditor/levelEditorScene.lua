@@ -14,6 +14,7 @@ function LevelEditorScene:init()
     )
 
     self.ditheredBlockSprite = gfx.sprite.new()
+    self.ditheredBlockSprite:setZIndex(100)
     self.ditheredBlockSprite:setCenter(0, 0)
     self.ditheredBlockSprite:add()
     self.blockList = BlockList(self)
@@ -22,19 +23,44 @@ function LevelEditorScene:init()
     self.blockSize = 32
     self.curX = 1
     self.curY = 1
+    self.maxX = 100
+
+    self.blockArray = {}
+    self.blockCodeArray = {}
 
     self:updateSelectedBlock()
     self:add()
 end
 
 function LevelEditorScene:update()
+    if pd.buttonJustPressed(pd.kButtonA) then
+        local curSprite = self.blockArray[self.curX]
+        if not curSprite then
+            curSprite = gfx.sprite.new()
+            curSprite:setCenter(0, 0)
+            curSprite:add()
+            self.blockArray[self.curX] = curSprite
+        end
+        self.blockCodeArray[self.curX] = self.selectedBlockData.letter
+        curSprite:setImage(self.selectedBlockData.blockImage)
+        curSprite:moveTo(self.ditheredBlockSprite.x, self.ditheredBlockSprite.y)
+    elseif pd.buttonJustPressed(pd.kButtonB) then
+        local curSprite = self.blockArray[self.curX]
+        if curSprite then
+            curSprite:remove()
+            self.blockArray[self.curX] = nil
+        end
+    end
+
     if pd.buttonJustPressed(pd.kButtonLeft) then
         if self.curX > 1 then
             self.curX -= 1
             self:updateBlockXPosition()
         end
     elseif pd.buttonJustPressed(pd.kButtonRight) then
-        self.curX += 1
+        if self.curX < self.maxX then
+            self.curX += 1
+        end
         self:updateBlockXPosition()
     elseif pd.buttonJustPressed(pd.kButtonUp) then
         if self.curY < 3 then
