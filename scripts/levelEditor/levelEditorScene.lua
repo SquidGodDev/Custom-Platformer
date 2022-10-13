@@ -6,12 +6,26 @@ local gfx <const> = playdate.graphics
 class('LevelEditorScene').extends(gfx.sprite)
 
 function LevelEditorScene:init()
+    gfx.setBackgroundColor(gfx.kColorBlack)
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
         function()
             backgroundImage:draw(0, 0)
         end
     )
+
+    self.scrollOffset = 100
+    self.scrollPosition = -32 + self.scrollOffset
+    self.scrollAnimator = pd.timer.new(250)
+    self.scrollAnimator.discardOnCompletion = false
+    self.scrollAnimator.easingFunction = pd.easingFunctions.outCubic
+    self.scrollAnimator:pause()
+    self.scrollAnimator.updateCallback = function(timer)
+        self.scrollPosition = timer.value
+    end
+    self.scrollAnimator.timerEndedCallback = function(timer)
+        self.scrollPosition = timer.endValue
+    end
 
     self.ditheredBlockSprite = gfx.sprite.new()
     self.ditheredBlockSprite:setZIndex(100)
@@ -73,6 +87,8 @@ function LevelEditorScene:update()
             self:updateBlockYPosition()
         end
     end
+
+    gfx.setDrawOffset(self.scrollPosition, 0)
 end
 
 function LevelEditorScene:updateSelectedBlock()
@@ -88,10 +104,18 @@ end
 
 function LevelEditorScene:updateBlockXPosition()
     self.ditheredBlockSprite:moveTo(self.curX * self.blockSize, self.ditheredBlockSprite.y)
+    self:animateScroll(-self.curX * self.blockSize + self.scrollOffset)
 end
 
 function LevelEditorScene:updateBlockYPosition()
     if self.selectedBlockData.baseHeight then
         self.ditheredBlockSprite:moveTo(self.ditheredBlockSprite.x, self.blockHeight - (self.curY - 1) * self.blockSize)
     end
+end
+
+function LevelEditorScene:animateScroll(newPos)
+    self.scrollAnimator:reset()
+    self.scrollAnimator.startValue = self.scrollPosition
+    self.scrollAnimator.endValue = newPos
+    self.scrollAnimator:start()
 end

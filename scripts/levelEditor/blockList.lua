@@ -19,9 +19,10 @@ function BlockList:init(levelEditor)
 
     local selectCursorImage = gfx.image.new("images/levelEditor/selectCursor")
     self.selectCursor = gfx.sprite.new(selectCursorImage)
+    self.selectCursor:setIgnoresDrawOffset(true)
     self.selectCursor:setCenter(0, 0)
     self.selectCursor:moveTo(400 - self.blockListWidth + 4, 0)
-    self.selectCursor:setZIndex(100)
+    self.selectCursor:setZIndex(1500)
     self.selectCursor:add()
 
     local blockListMetatable = getmetatable(self.blockList)
@@ -33,12 +34,16 @@ function BlockList:init(levelEditor)
         local blockIcon = blockData[row].icon
         blockIcon:draw(x, y)
     end
+    self:setIgnoresDrawOffset(true)
+    self:setZIndex(1000)
     self:setCenter(0, 0)
     self:moveTo(400 - self.blockListWidth, 0)
     self:add()
 
     local borderImage = gfx.image.new(4, 240, gfx.kColorWhite)
     local borderSprite = gfx.sprite.new(borderImage)
+    borderSprite:setIgnoresDrawOffset(true)
+    borderSprite:setZIndex(1000)
     borderSprite:setCenter(1, 0)
     borderSprite:moveTo(400 - self.blockListWidth, 0)
     borderSprite:add()
