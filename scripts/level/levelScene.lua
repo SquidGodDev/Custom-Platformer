@@ -11,6 +11,8 @@ import "scripts/level/blocks/turret/turret"
 import "scripts/level/blocks/crumblingPlatform"
 import "scripts/level/player/player"
 
+import "scripts/levelEditor/levelEditorScene"
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
@@ -33,12 +35,18 @@ function LevelScene:init(levelString)
     -- ShortSpace(180+64+32+32+64)
     -- LongBlock(180+64+32+32+64+16)
 
-    levelString = "abrdddaammpaafaaoaaoaaobabsdzddyddzddbbb"
+    -- levelString = "abrdddaammpaafaaoaaoaaobabsdzddyddzddbbb"
     self:processLevelString(levelString)
 
 
     Player(200, 150)
     self:add()
+
+    local playdateMenu = pd.getSystemMenu()
+    playdateMenu:removeAllMenuItems()
+    playdateMenu:addMenuItem("Level Editor", function()
+        SCENE_MANAGER:switchScene(LevelEditorScene)
+    end)
 end
 
 function LevelScene:update()

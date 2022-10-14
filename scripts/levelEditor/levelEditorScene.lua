@@ -1,4 +1,5 @@
 import "scripts/levelEditor/blockList"
+import "scripts/level/levelScene"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -41,9 +42,20 @@ function LevelEditorScene:init()
 
     self.blockArray = {}
     self.blockCodeArray = {}
+    self.spaceLetter = "d"
+    for i=1,self.maxX do
+        self.blockCodeArray[i] = self.spaceLetter
+    end
 
     self:updateSelectedBlock()
     self:add()
+
+    local playdateMenu = pd.getSystemMenu()
+    playdateMenu:removeAllMenuItems()
+    playdateMenu:addMenuItem("Play Level", function()
+        local levelString = self:calculateLevelString()
+        SCENE_MANAGER:switchScene(LevelScene, levelString)
+    end)
 end
 
 function LevelEditorScene:update()
@@ -55,7 +67,7 @@ function LevelEditorScene:update()
             curSprite:add()
             self.blockArray[self.curX] = curSprite
         end
-        self.blockCodeArray[self.curX] = self.selectedBlockData.letter
+        self.blockCodeArray[self.curX] = self:getBlockLetter()
         curSprite:setImage(self.selectedBlockData.blockImage)
         curSprite:moveTo(self.ditheredBlockSprite.x, self.ditheredBlockSprite.y)
     elseif pd.buttonJustPressed(pd.kButtonB) then
@@ -63,6 +75,7 @@ function LevelEditorScene:update()
         if curSprite then
             curSprite:remove()
             self.blockArray[self.curX] = nil
+            self.blockCodeArray[self.curX] = self.spaceLetter
         end
     end
 
@@ -118,4 +131,22 @@ function LevelEditorScene:animateScroll(newPos)
     self.scrollAnimator.startValue = self.scrollPosition
     self.scrollAnimator.endValue = newPos
     self.scrollAnimator:start()
+end
+
+function LevelEditorScene:getBlockLetter()
+    local blockByte = string.byte(self.selectedBlockData.letter)
+    if self.selectedBlockData.baseHeight then
+        blockByte += self.curY - 1
+    end
+    return string.char(blockByte)
+end
+
+function LevelEditorScene:calculateLevelString()
+    local levelStringEndIndex = self.maxX
+    while self.blockCodeArray[levelStringEndIndex] ~= self.spaceLetter and levelStringEndIndex >= 1 do
+        levelStringEndIndex -= 1
+    end
+
+    local blockCodes = {table.unpack(self.blockCodeArray, 1, levelStringEndIndex)}
+    return table.concat(blockCodes)
 end
