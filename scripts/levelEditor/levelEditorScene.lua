@@ -6,7 +6,7 @@ local gfx <const> = playdate.graphics
 
 class('LevelEditorScene').extends(gfx.sprite)
 
-function LevelEditorScene:init()
+function LevelEditorScene:init(levelString)
     gfx.setBackgroundColor(gfx.kColorBlack)
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
@@ -53,9 +53,30 @@ function LevelEditorScene:init()
     local playdateMenu = pd.getSystemMenu()
     playdateMenu:removeAllMenuItems()
     playdateMenu:addMenuItem("Play Level", function()
-        local levelString = self:calculateLevelString()
-        SCENE_MANAGER:switchScene(LevelScene, levelString)
+        local calculatedLevelString = self:calculateLevelString()
+        SCENE_MANAGER:switchScene(LevelScene, calculatedLevelString)
     end)
+
+    if levelString then
+        local letterToBlock = getLetterToBlock()
+        for i=1,#levelString do
+            local curChar = levelString:sub(i,i)
+            if curChar ~= self.spaceLetter then
+                self.blockCodeArray[i] = curChar
+                local blockData = letterToBlock[curChar]
+                local blockImage = blockData.blockImage
+                local blockHeight = blockData.blockHeight
+                if not blockHeight then
+                    blockHeight = self.defaultHeight
+                end
+                local curSprite = gfx.sprite.new(blockImage)
+                curSprite:setCenter(0, 0)
+                curSprite:moveTo(i * self.blockSize, blockHeight)
+                curSprite:add()
+                self.blockArray[i] = curSprite
+            end
+        end
+    end
 end
 
 function LevelEditorScene:update()
@@ -107,9 +128,6 @@ end
 function LevelEditorScene:updateSelectedBlock()
     self.selectedBlockData = self.blockList:getSelectedBlockData()
     self.blockHeight = self.selectedBlockData.baseHeight
-    if not self.blockHeight then
-        self.blockHeight = self.defaultHeight
-    end
     self.ditheredBlockSprite:setImage(self.selectedBlockData.ditheredBlock)
     self:updateBlockXPosition()
     self:updateBlockYPosition()
@@ -118,11 +136,14 @@ end
 function LevelEditorScene:updateBlockXPosition()
     self.ditheredBlockSprite:moveTo(self.curX * self.blockSize, self.ditheredBlockSprite.y)
     self:animateScroll(-self.curX * self.blockSize + self.scrollOffset)
+    self:updateBlockYPosition()
 end
 
 function LevelEditorScene:updateBlockYPosition()
-    if self.selectedBlockData.baseHeight then
+    if self.selectedBlockData.adjustableHeight then
         self.ditheredBlockSprite:moveTo(self.ditheredBlockSprite.x, self.blockHeight - (self.curY - 1) * self.blockSize)
+    else
+        self.ditheredBlockSprite:moveTo(self.ditheredBlockSprite.x, self.blockHeight)
     end
 end
 
@@ -135,7 +156,7 @@ end
 
 function LevelEditorScene:getBlockLetter()
     local blockByte = string.byte(self.selectedBlockData.letter)
-    if self.selectedBlockData.baseHeight then
+    if self.selectedBlockData.adjustableHeight then
         blockByte += self.curY - 1
     end
     return string.char(blockByte)

@@ -45,7 +45,7 @@ function LevelScene:init(levelString)
     local playdateMenu = pd.getSystemMenu()
     playdateMenu:removeAllMenuItems()
     playdateMenu:addMenuItem("Level Editor", function()
-        SCENE_MANAGER:switchScene(LevelEditorScene)
+        SCENE_MANAGER:switchScene(LevelEditorScene, levelString)
     end)
 end
 
