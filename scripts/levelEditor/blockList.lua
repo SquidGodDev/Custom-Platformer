@@ -3,6 +3,7 @@ import "scripts/levelEditor/blockData"
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 local blockData <const> = getBlockData()
+local util <const> = utilities
 
 class('BlockList').extends(gfx.sprite)
 
@@ -47,6 +48,13 @@ function BlockList:init(levelEditor)
     borderSprite:setCenter(1, 0)
     borderSprite:moveTo(400 - self.blockListWidth, 0)
     borderSprite:add()
+
+    self.blockNameSprite = gfx.sprite.new()
+    self.blockNameSprite:setIgnoresDrawOffset(true)
+    self.blockNameSprite:setCenter(0, 0)
+    self.blockNameSprite:moveTo(20, 20)
+    self.blockNameSprite:add()
+    self:updateBlockName()
 end
 
 function BlockList:update()
@@ -54,9 +62,11 @@ function BlockList:update()
     if crankTicks == 1 then
         self.blockList:selectNextRow(true)
         self.levelEditor:updateSelectedBlock()
+        self:updateBlockName()
     elseif crankTicks == -1 then
         self.blockList:selectPreviousRow(true)
         self.levelEditor:updateSelectedBlock()
+        self:updateBlockName()
     end
 
     if self.blockList.needsDisplay then
@@ -71,4 +81,14 @@ end
 function BlockList:getSelectedBlockData()
     local selectedRow = self.blockList:getSelectedRow()
     return blockData[selectedRow]
+end
+
+function BlockList:updateBlockName()
+    local selectedBlockData = self:getSelectedBlockData()
+    local blockName = selectedBlockData.name
+    gfx.pushContext()
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        local blockNameImage = util.centeredTextImage(blockName)
+    gfx.popContext()
+    self.blockNameSprite:setImage(blockNameImage)
 end

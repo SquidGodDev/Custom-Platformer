@@ -11,7 +11,7 @@ end
 
 local height1 = LEVEL_BASE_Y
 
-local function blockData(blockImage, letter, baseHeight, adjustableHeight, iconImage)
+local function blockData(blockImage, letter, baseHeight, adjustableHeight, name, iconImage)
     local ditheredBlock = getDitheredImage(blockImage)
     if not iconImage then
         iconImage = blockImage:scaledImage(0.5)
@@ -22,55 +22,59 @@ local function blockData(blockImage, letter, baseHeight, adjustableHeight, iconI
         ditheredBlock = ditheredBlock,
         baseHeight = baseHeight,
         adjustableHeight = adjustableHeight,
-        letter = letter
+        letter = letter,
+        name = name
     }
 end
 
 local function platform1Data(letter)
     local blockImage = gfx.image.new("images/blocks/platform1")
-    return blockData(blockImage, letter, height1, true)
+    return blockData(blockImage, letter, height1, true, "Block")
 end
 
 local function spikeData(letter)
     local blockImage = gfx.image.new("images/levelEditor/blocks/spike")
     local iconImage = gfx.image.new("images/levelEditor/blocks/spikeIcon")
-    return blockData(blockImage, letter, height1 - 16, true, iconImage)
+    return blockData(blockImage, letter, height1 - 16, true, "Spike", iconImage)
 end
 
 local function horizontalMovingSpikeData(letter)
-    local blockImage = gfx.image.new("images/blocks/spikeBall")
-    return blockData(blockImage, letter, height1, true)
+    local blockImage = gfx.image.new("images/levelEditor/blocks/horizontalMovingSpike")
+    local iconImage = gfx.image.new("images/levelEditor/blocks/spikeBallIcon")
+    return blockData(blockImage, letter, height1, true, "Horizontal Moving Spike", iconImage)
 end
 
 local function verticalMovingSpikeData(letter)
     local blockImage = gfx.image.new("images/levelEditor/blocks/verticalMovingSpike")
     local iconImage = gfx.image.new("images/levelEditor/blocks/spikeBallIcon")
-    return blockData(blockImage, letter, height1 - 64, false, iconImage)
+    return blockData(blockImage, letter, height1 - 64, false, "Vertical Moving Spike", iconImage)
 end
 
 local function spurData(letter)
     local blockImage = gfx.image.new("images/blocks/spur")
-    return blockData(blockImage, letter, height1, true)
+    return blockData(blockImage, letter, height1, true, "Spur")
 end
 
 local function turretData(letter, flipped)
+    local blockName = "Turret (Left)"
     local blockImage = gfx.image.new("images/levelEditor/blocks/turret")
     local iconImage = gfx.image.new("images/levelEditor/blocks/turretIcon")
     if flipped then
         blockImage = gfx.image.new("images/levelEditor/blocks/turretFlipped")
         iconImage = gfx.image.new("images/levelEditor/blocks/turretIconFlipped")
+        blockName = "Turret (Right)"
     end
-    return blockData(blockImage, letter, height1 - 48, true, iconImage)
+    return blockData(blockImage, letter, height1 - 48, true, blockName, iconImage)
 end
 
 local function crumblingPlatformData(letter)
     local blockImage = gfx.image.new("images/blocks/crumblingPlatform")
-    return blockData(blockImage, letter, height1, true)
+    return blockData(blockImage, letter, height1, true, "Crumbling Platform")
 end
 
 local function movingPlatformData(letter)
     local blockImage = gfx.image.new("images/blocks/movingPlatform")
-    return blockData(blockImage, letter, height1, true)
+    return blockData(blockImage, letter, height1, true, "Moving Platform")
 end
 
 local blockTable = {

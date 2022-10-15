@@ -22,6 +22,9 @@ import "scripts/levelEditor/levelEditorScene"
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
+local m5x7font = gfx.font.new("images/fonts/m5x7-24")
+gfx.setFont(m5x7font)
+
 SCENE_MANAGER = SceneManager()
 
 -- LevelLoadScene()
@@ -31,5 +34,5 @@ LevelEditorScene()
 function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
-    pd.drawFPS(10, 10)
+    pd.drawFPS(4, 4)
 end
