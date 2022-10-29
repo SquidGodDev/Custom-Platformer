@@ -31,7 +31,7 @@ local gfx <const> = playdate.graphics
 
 class('LevelListScene').extends(gfx.sprite)
 
-function LevelListScene:init()
+function LevelListScene:init(levelIndex)
     local backgroundImage = gfx.image.new("images/levelList/levelListBackground")
     local backgroundSprite = gfx.sprite.new(backgroundImage)
     backgroundSprite:moveTo(200, 120)
@@ -48,20 +48,7 @@ function LevelListScene:init()
     if gameData then
         self.levels = gameData.levels
     else
-        self.levels = {
-            {
-                levelName = "My Level 1",
-                levelCode = "abcd"
-            },
-            {
-                levelName = "My Awesome Level",
-                levelCode = "abcde"
-            },
-            {
-                levelName = "test",
-                levelCode = "aaaaa"
-            }
-        }
+        self.levels = {}
     end
     self.listview:setNumberOfRows(#self.levels + 1)
 
@@ -69,6 +56,10 @@ function LevelListScene:init()
     self.listviewObject.addRow = #self.levels + 1
     self.listviewObject.addRowImage = gfx.image.new("images/levelList/newLevelButton")
     self.listviewObject.fontHeight = gfx.getSystemFont():getHeight()
+
+    if levelIndex and levelIndex <= #self.levels then
+        self.listview:setSelectedRow(levelIndex)
+    end
 
     function self.listview:drawCell(section, row, column, selected, x, y, width, height)
         if row == self.addRow then
@@ -115,6 +106,13 @@ function LevelListScene:init()
     self.popupSelectorSprite:moveTo(self.popupSelectorBaseX, self.popupSelectorBaseY)
     self.popupSelectorSprite:setVisible(false)
     self.popupSelectorSprite:add()
+
+    -- Delete Prompt
+    local deletePromptImage = gfx.image.new("images/levelList/deleteLevelPrompt")
+    self.deletePromptSprite = gfx.sprite.new(deletePromptImage)
+    self.deletePromptSprite:moveTo(200, 120)
+    self.deletePromptSprite:setVisible(false)
+    self.deletePromptSprite:add()
 
     -- Name Input
     self.nameInputActive = false
@@ -178,21 +176,49 @@ function LevelListScene:init()
 end
 
 function LevelListScene:update()
+    local forceUpdateList = false
+
     if self.nameInputActive then
         -- Nothing
+    elseif self.deletePromptSprite:isVisible() then
+        if pd.buttonJustPressed(pd.kButtonA) then
+            local curListRow = self.listview:getSelectedRow()
+            table.remove(self.levels, curListRow)
+            self:saveGameData()
+            self.listviewObject = getmetatable(self.listview)
+            self.listviewObject.levels = self.levels
+            self.listviewObject.addRow = #self.levels + 1
+            self.listview:setNumberOfRows(#self.levels + 1)
+            self.deletePromptSprite:setVisible(false)
+            self.popupSprite:setVisible(false)
+            self.popupSelectorSprite:setVisible(false)
+            self:updatePanel()
+        elseif pd.buttonJustPressed(pd.kButtonB) then
+            self.deletePromptSprite:setVisible(false)
+        end
     elseif self.popupSprite:isVisible() then
         if pd.buttonJustPressed(pd.kButtonLeft) then
             if self.popupIndex > 1 then
                 self.popupIndex -= 1
                 self.popupSelectorSprite:moveTo(self.popupSelectorBaseX + (self.popupIndex - 1)*self.popupSelectorGap, self.popupSelectorBaseY)
+                gfx.sprite.addDirtyRect(108, 86, 184, 66)
             end
         elseif pd.buttonJustPressed(pd.kButtonRight) then
             if self.popupIndex < 3 then
                 self.popupIndex += 1
                 self.popupSelectorSprite:moveTo(self.popupSelectorBaseX + (self.popupIndex - 1)*self.popupSelectorGap, self.popupSelectorBaseY)
+                gfx.sprite.addDirtyRect(108, 86, 184, 66)
             end
         elseif pd.buttonJustPressed(pd.kButtonA) then
-
+            local curListRow = self.listview:getSelectedRow()
+            local selectedLevel = self.levels[curListRow]
+            if self.popupIndex == 1 then
+                SCENE_MANAGER:switchScene(LevelScene, selectedLevel.levelCode, false, curListRow)
+            elseif self.popupIndex == 2 then
+                SCENE_MANAGER:switchScene(LevelEditorScene, selectedLevel.levelCode, self.levels, curListRow)
+            elseif self.popupIndex == 3 then
+                self.deletePromptSprite:setVisible(true)
+            end
         elseif pd.buttonJustPressed(pd.kButtonB) then
             self.popupSelectorSprite:setVisible(false)
             self.popupSprite:setVisible(false)
@@ -214,14 +240,14 @@ function LevelListScene:update()
                 self.popupSprite:setVisible(true)
             end
         end
+    end
 
-        if self.listview.needsDisplay then
-            local listviewImage = gfx.image.new(self.listWidth, self.listHeight)
-            gfx.pushContext(listviewImage)
-                self.listview:drawInRect(0, 0, self.listWidth, self.listHeight)
-            gfx.popContext()
-            self:setImage(listviewImage)
-        end
+    if self.listview.needsDisplay or forceUpdateList then
+        local listviewImage = gfx.image.new(self.listWidth, self.listHeight)
+        gfx.pushContext(listviewImage)
+            self.listview:drawInRect(0, 0, self.listWidth, self.listHeight)
+        gfx.popContext()
+        self:setImage(listviewImage)
     end
 
     self.nameInputSprite:moveTo(self.nameInputSprite.x, self.nameInputPosition)

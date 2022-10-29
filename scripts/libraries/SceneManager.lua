@@ -16,7 +16,7 @@ fadedRects[100] = gfx.image.new(400, 240, gfx.kColorBlack)
 class('SceneManager').extends()
 
 function SceneManager:init()
-    self.transitionTime = 1000
+    self.transitionTime = 500
     self.transitioning = false
 end
 

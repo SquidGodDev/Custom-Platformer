@@ -18,7 +18,7 @@ local gfx <const> = playdate.graphics
 
 class('LevelScene').extends(gfx.sprite)
 
-function LevelScene:init(levelString, fromLevelEditor)
+function LevelScene:init(levelString, fromLevelEditor, levelIndex)
     TEMP_HAZARDS = {}
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
@@ -46,6 +46,13 @@ function LevelScene:init(levelString, fromLevelEditor)
     if fromLevelEditor then
         playdateMenu:addMenuItem("Level Editor", function()
             SCENE_MANAGER:switchScene(LevelEditorScene, levelString)
+        end)
+        playdateMenu:addMenuItem("Save and Exit", function()
+            SCENE_MANAGER:switchScene(LevelListScene, levelIndex)
+        end)
+    else
+        playdateMenu:addMenuItem("Exit", function()
+            SCENE_MANAGER:switchScene(LevelListScene, levelIndex)
         end)
     end
 end

@@ -18,7 +18,7 @@ function LevelEditorScene:init(levelString, levels, levelIndex)
         end
     )
 
-    self.scrollOffset = 100
+    self.scrollOffset = 180
     self.scrollPosition = -32 + self.scrollOffset
     self.scrollAnimator = pd.timer.new(250)
     self.scrollAnimator.discardOnCompletion = false
@@ -58,10 +58,12 @@ function LevelEditorScene:init(levelString, levels, levelIndex)
     playdateMenu:addMenuItem("Play Level", function()
         local calculatedLevelString = self:calculateLevelString()
         self:saveLevel(calculatedLevelString)
-        SCENE_MANAGER:switchScene(LevelScene, calculatedLevelString, true)
+        SCENE_MANAGER:switchScene(LevelScene, calculatedLevelString, true, levelIndex)
     end)
-    playdateMenu:addMenuItem("Return to Levels", function()
-        SCENE_MANAGER:switchScene(LevelListScene)
+    playdateMenu:addMenuItem("Save and Exit", function()
+        local calculatedLevelString = self:calculateLevelString()
+        self:saveLevel(calculatedLevelString)
+        SCENE_MANAGER:switchScene(LevelListScene, levelIndex)
     end)
 
     if levelString then
