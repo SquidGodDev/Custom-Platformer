@@ -45,13 +45,13 @@ function LevelScene:init(levelString, fromLevelEditor, levelIndex)
     playdateMenu:removeAllMenuItems()
     if fromLevelEditor then
         playdateMenu:addMenuItem("Level Editor", function()
-            SCENE_MANAGER:switchScene(LevelEditorScene, levelString)
+            SCENE_MANAGER:switchScene(LevelEditorScene, levelString, levelIndex)
         end)
         playdateMenu:addMenuItem("Save and Exit", function()
             SCENE_MANAGER:switchScene(LevelListScene, levelIndex)
         end)
     else
-        playdateMenu:addMenuItem("Exit", function()
+        playdateMenu:addMenuItem("Exit Level", function()
             SCENE_MANAGER:switchScene(LevelListScene, levelIndex)
         end)
     end

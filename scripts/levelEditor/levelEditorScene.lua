@@ -6,8 +6,9 @@ local gfx <const> = playdate.graphics
 
 class('LevelEditorScene').extends(gfx.sprite)
 
-function LevelEditorScene:init(levelString, levels, levelIndex)
-    self.levels = levels
+function LevelEditorScene:init(levelString, levelIndex)
+    local gameData = pd.datastore.read()
+    self.levels = gameData.levels
     self.levelIndex = levelIndex
 
     gfx.setBackgroundColor(gfx.kColorBlack)

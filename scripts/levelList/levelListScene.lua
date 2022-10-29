@@ -152,7 +152,7 @@ function LevelListScene:init(levelIndex)
                 }
                 table.insert(self.levels, newLevel)
                 self:saveGameData()
-                SCENE_MANAGER:switchScene(LevelEditorScene, "", self.levels, #self.levels)
+                SCENE_MANAGER:switchScene(LevelEditorScene, "", #self.levels)
             end
         end
     end
@@ -173,6 +173,9 @@ function LevelListScene:init(levelIndex)
         gfx.popContext()
         self.nameBoxSprite:setImage(inputBoxTextImage)
     end
+
+    local playdateMenu = pd.getSystemMenu()
+    playdateMenu:removeAllMenuItems()
 end
 
 function LevelListScene:update()
@@ -215,7 +218,7 @@ function LevelListScene:update()
             if self.popupIndex == 1 then
                 SCENE_MANAGER:switchScene(LevelScene, selectedLevel.levelCode, false, curListRow)
             elseif self.popupIndex == 2 then
-                SCENE_MANAGER:switchScene(LevelEditorScene, selectedLevel.levelCode, self.levels, curListRow)
+                SCENE_MANAGER:switchScene(LevelEditorScene, selectedLevel.levelCode, curListRow)
             elseif self.popupIndex == 3 then
                 self.deletePromptSprite:setVisible(true)
             end
