@@ -18,7 +18,7 @@ local gfx <const> = playdate.graphics
 
 class('LevelScene').extends(gfx.sprite)
 
-function LevelScene:init(levelString)
+function LevelScene:init(levelString, fromLevelEditor)
     TEMP_HAZARDS = {}
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
@@ -38,15 +38,16 @@ function LevelScene:init(levelString)
     -- levelString = "abrdddaammpaafaaoaaoaaobabsdzddyddzddbbb"
     self:processLevelString(levelString)
 
-
     Player(200, 150)
     self:add()
 
     local playdateMenu = pd.getSystemMenu()
     playdateMenu:removeAllMenuItems()
-    playdateMenu:addMenuItem("Level Editor", function()
-        SCENE_MANAGER:switchScene(LevelEditorScene, levelString)
-    end)
+    if fromLevelEditor then
+        playdateMenu:addMenuItem("Level Editor", function()
+            SCENE_MANAGER:switchScene(LevelEditorScene, levelString)
+        end)
+    end
 end
 
 function LevelScene:update()

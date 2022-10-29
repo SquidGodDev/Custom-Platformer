@@ -6,7 +6,10 @@ local gfx <const> = playdate.graphics
 
 class('LevelEditorScene').extends(gfx.sprite)
 
-function LevelEditorScene:init(levelString)
+function LevelEditorScene:init(levelString, levels, levelIndex)
+    self.levels = levels
+    self.levelIndex = levelIndex
+
     gfx.setBackgroundColor(gfx.kColorBlack)
     local backgroundImage = gfx.image.new(400, 240, gfx.kColorBlack)
     gfx.sprite.setBackgroundDrawingCallback(
@@ -54,7 +57,11 @@ function LevelEditorScene:init(levelString)
     playdateMenu:removeAllMenuItems()
     playdateMenu:addMenuItem("Play Level", function()
         local calculatedLevelString = self:calculateLevelString()
-        SCENE_MANAGER:switchScene(LevelScene, calculatedLevelString)
+        self:saveLevel(calculatedLevelString)
+        SCENE_MANAGER:switchScene(LevelScene, calculatedLevelString, true)
+    end)
+    playdateMenu:addMenuItem("Return to Levels", function()
+        SCENE_MANAGER:switchScene(LevelListScene)
     end)
 
     if levelString then
@@ -170,4 +177,17 @@ function LevelEditorScene:calculateLevelString()
 
     local blockCodes = {table.unpack(self.blockCodeArray, 1, levelStringEndIndex)}
     return table.concat(blockCodes)
+end
+
+function LevelEditorScene:saveLevel(levelString)
+    self.levels[self.levelIndex].levelCode = levelString
+    local gameData = pd.datastore.read()
+    if gameData then
+       gameData.levels = self.levels
+    else
+        gameData = {
+            levels = self.levels
+        }
+    end
+    pd.datastore.write(gameData)
 end
