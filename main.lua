@@ -13,6 +13,8 @@ import "CoreLibs/timer"
 import "CoreLibs/ui"
 import "CoreLibs/crank"
 import "CoreLibs/keyboard"
+import "CoreLibs/qrcode"
+import "CoreLibs/animation"
 
 import "scripts/libraries/Utilities"
 import "scripts/libraries/SceneManager"

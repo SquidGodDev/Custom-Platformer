@@ -24,6 +24,7 @@
 -- 3. Return Home
 
 import "scripts/levelEditor/LevelEditorScene"
+import "scripts/levelList/qrCodeScene"
 import "scripts/level/LevelScene"
 
 local pd <const> = playdate
@@ -176,6 +177,13 @@ function LevelListScene:init(levelIndex)
 
     local playdateMenu = pd.getSystemMenu()
     playdateMenu:removeAllMenuItems()
+    playdateMenu:addMenuItem("Share Level QR", function()
+        local curListRow = self.listview:getSelectedRow()
+        local curLevelData = self.levels[curListRow]
+        if curLevelData then
+            SCENE_MANAGER:switchScene(QrCodeScene, curLevelData.levelCode, curLevelData.levelName, curListRow)
+        end
+    end)
 end
 
 function LevelListScene:update()

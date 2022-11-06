@@ -174,7 +174,7 @@ end
 
 function LevelEditorScene:calculateLevelString()
     local levelStringEndIndex = self.maxX
-    while self.blockCodeArray[levelStringEndIndex] ~= self.spaceLetter and levelStringEndIndex >= 1 do
+    while self.blockCodeArray[levelStringEndIndex] == self.spaceLetter and levelStringEndIndex >= 1 do
         levelStringEndIndex -= 1
     end
 
